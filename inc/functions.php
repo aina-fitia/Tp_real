@@ -45,10 +45,13 @@ function get_all_departments()
     return get_all_lines($sql);
 }
 
+
+
 function get_jobs_stats()
 {
     // Statistiques par emploi (titre actuel) :
-    // - SUM(e.gender = 'M') compte les lignes où la condition est vraie (1) ou fausse (0) → nb d'hommes
+    // - SUM(e.gender = 'M') compte les lignes où la condition
+    // est vraie (1) ou fausse (0) → nb d'hommes
     // - AVG(s.salary) = salaire moyen actuel
     $sql = "SELECT t.title,
                    SUM(e.gender = 'M') AS nb_hommes,
@@ -147,7 +150,9 @@ function make_manager($emp_no, $dept_no, $start_date)
     execute_query($sql1);
 
     // 2) On insère le nouveau manager comme courant.
-    //    ON DUPLICATE KEY UPDATE : si cet employé a déjà managé ce département, on réactive la ligne.
+    //    ON DUPLICATE KEY UPDATE : si cet employé a déjà managé ce département, 
+    
+    //on réactive la ligne.
     $sql2 = "INSERT INTO dept_manager (emp_no, dept_no, from_date, to_date)
              VALUES ('%s', '%s', '%s', '9999-01-01')
              ON DUPLICATE KEY UPDATE from_date = '%s', to_date = '9999-01-01'";
@@ -212,7 +217,8 @@ function get_one_department($dept_no)
 
 function get_employees_by_department($dept_no, $limit, $offset)
 {
-    // ⚠️ sprintf n'échappe pas : injection SQL toujours possible (à sécuriser avec une requête préparée).
+    // ⚠️ sprintf n'échappe pas : injection SQL toujours possible 
+    //(à sécuriser avec une requête préparée).
     // %d force des entiers pour LIMIT et OFFSET (pagination).
     $sql = "SELECT e.emp_no,
                    e.first_name,
@@ -278,7 +284,8 @@ function get_longest_title($emp_no)
     $sql = "SELECT title,
                    from_date,
                    to_date,
-                   DATEDIFF(IF(to_date = '9999-01-01', CURDATE(), to_date), from_date) AS duree_jours
+                   DATEDIFF(IF(to_date = '9999-01-01', CURDATE(), to_date), from_date) 
+                   AS duree_jours
             FROM titles
             WHERE emp_no = '%s'
             ORDER BY duree_jours DESC
